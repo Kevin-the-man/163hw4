@@ -111,19 +111,7 @@ export default {
         .attr("y", (d) => this.y(d[this.attribY]))
         .attr("width", this.x.bandwidth())
         .attr("height", (d) => this.y(0) - this.y(d[this.attribY]));
-      d3.select(`.barchart-svg-${this.chartId}`)
-        .select(".plot")
-        .selectAll("rect")
-        .on('click', (event, d) => {
-            this.itemSelected(d)
-        })
-        .on('mouseover', function() {
-            d3.select(this).attr('class', 'hover')
-        })
-        .on('mouseout', function() {
-            d3.select(this).attr('class', null)
-        })
-    },
+    }, 
     renderXAxis() {
       let xAxis = d3.axisBottom(this.x);
       d3.select(`.barchart-svg-${this.chartId}`).select(".x-axis").call(xAxis);
@@ -132,14 +120,10 @@ export default {
       let yAxis = d3.axisLeft(this.y);
       d3.select(`.barchart-svg-${this.chartId}`).select(".y-axis").call(yAxis);
     },
-    itemSelected(d) {
-        console.log(`Selected ${d}`)
-        this.$emit('item-selected', d)
-    }
   },
   computed: {
     viewBox() {
-      return `0 0 ${(this.width + this.margin.left + this.margin.right)} ${
+      return `0 0 ${(this.width + this.margin.left + this.margin.right) } ${
         (this.height + this.margin.top + this.margin.bottom)
       }`;
     },
@@ -150,10 +134,7 @@ export default {
 
 <style>
 .plot rect {
-  fill: #eeb27b;
+  fill: #7bee94;
 }
-.plot rect.hover {
-    fill-opacity: 1;
-    stroke: black;
-}
+
 </style>

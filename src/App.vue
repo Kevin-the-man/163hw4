@@ -5,7 +5,7 @@
       class="scatter-plot"
       v-if="dataset"
       chartId="poke1"
-      title="All Fire type Pokemons"
+      title="All Fire Pokemons"
       :dataset="dataset"
       attribX="relStrength"
       labelX="Strength"
@@ -28,6 +28,19 @@
       attribX="name" 
       attribY="value"  
       labelY="Strength"
+      @item-selected="barSelected"
+      :width="800"
+      :height="500" 
+    />
+    <Bar2 
+      class="bar-2" 
+      v-if="datasetSelected" 
+      chartId="poke3" 
+      :title="`More info about ${datasetSelected.name}`" 
+      :dataset="datasetSelected.entries2" 
+      attribX="name" 
+      attribY="value"  
+      labelY="Strength"
       :width="800"
       :height="500" />
     <h1 v-else class="bar-chart-info">Select a Pokemon</h1>
@@ -39,16 +52,21 @@ import * as d3 from "d3";
 
 import ScatterPlot from "./components/ScatterPlot.vue";
 import BarChart from "./components/BarChart.vue";
+import Bar2 from "./components/Bar2.vue";
+
 export default {
   name: "App",
   components: {
     ScatterPlot,
     BarChart,
+    Bar2,
   },
+
   data() {
     return {
       dataset: null,
       datasetSelected: null,
+      barselected:null,
     };
   },
 
@@ -72,17 +90,39 @@ export default {
       let pokemon = d3.filter(this.dataset, d => d.Number == p.Number)[0]
       
       let entries = []
+      let entries2 = []
+
       for (const stat of ['HP', 'Attack']) {
         entries.push({
           name: stat,
           value: pokemon[stat]
         })
       }
+      for (const stat of ['Defense', 'Speed', 'Total']) {
+        entries2.push({
+          name: stat,
+          value: pokemon[stat]
+        })
+      }
       this.datasetSelected = {
         name: pokemon.Name,
-        entries: entries
+        pok:pokemon,
+        entries: entries,
+        entries2: entries2
       }
-    }
+    },
+  barSelected(q){
+      if(q == null) {
+        this.barselected = null
+        return
+      }
+      if (q == this.datasetSelected.pok.HP){
+        this.barselected = {
+          name: this.datasetSelected.name,
+          health: this.datasetSelected.pok.HP
+        }
+      }
+    },
   }
 };
 </script>
@@ -100,6 +140,7 @@ export default {
   grid-template-areas: 
     ". . . ." 
     ". overview detail ."
+    ". overview detail2 ."
     ". . . .";
 }
 .scatter-plot {
@@ -107,6 +148,9 @@ export default {
 }
 .bar-chart {
   grid-area: detail;
+}
+.bar-2 {
+  grid-area: detail2 ;
 }
 .bar-chart-info {
   grid-area: detail;
